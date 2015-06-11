@@ -1,16 +1,36 @@
-package vn.bombi.study;
+package vn.bombi.study.Activity;
 
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+
+import vn.bombi.study.Fragment.TopFragment;
+import vn.bombi.study.Helper.NotificationHelper;
+import vn.bombi.study.R;
 
 public class MainActivity extends AppCompatActivity {
+
+    NotificationHelper mNotiHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        initLayout();
+
+        mNotiHelper = new NotificationHelper(this);
+    }
+
+    private void initLayout(){
+        TopFragment fragment = new TopFragment();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.add(R.id.rootView, fragment);
+        ft.commit();
+
     }
 
     @Override
@@ -33,5 +53,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void addBigViewNotification(View v){
+        String msg = "111111111111111111111111\n2222222222222222222222\n33333333333333333333333\n" +
+                "44444444444444444444444444\n555555555555555555555\n666666666666666666666\n" +
+                "77777777777777777777777777\n888888888888888888888\n999999999999999999999\n000000000000000";
+        mNotiHelper.addBigView(msg);
     }
 }
