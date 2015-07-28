@@ -1,0 +1,44 @@
+<resources>
+    <string name="app_name">BiglobeApp</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_tutorial">TutorialActivity</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <!-- TOP screen-->
+    <string name="top_header1">ショートカット</string>
+    <string name="top_open_biglobe">BIGLOBEを開く</string>
+    <string name="top_open_how_to_use">アプリの使い方</string>
+    <string name="top_header2">基本設定</string>
+    <string name="top_setting">通知の設定</string>
+    <string name="top_header3">その他</string>
+    <string name="top_create_shortcut">ホーム画面にアイコンを追加</string>
+    <string name="top_show_tutorial">チュートリアルを表示</string>
+    <string name="top_header4">情報</string>
+    <string name="top_version_info">バージョン情報</string>
+    <string name="top_open_playstore">Playストア</string>
+
+    <!-- Setting screen -->
+    <string name="setting_push">通知</string>
+    <string name="setting_header_news">注目ニュース</string>
+    <string name="setting_header_news_description">朝・昼・夜の注目ニュース１本を通知します</string>
+    <string name="setting_news_moring">朝のニュース</string>
+    <string name="setting_news_noon">昼のニュース</string>
+    <string name="setting_news_night">夜のニュース</string>
+    <string name="setting_news_dialog">注目ニュースのダイアログ</string>
+    <string name="setting_header_baseball">プロ野球</string>
+    <string name="setting_header_baseball_description">試合スケジュールや試合の開始・終了を通知します</string>
+    <string name="setting_baseball_schedule">試合スケジュール</string>
+    <string name="setting_header_baseball_battle_start">試合開始</string>
+    <string name="setting_header_baseball_battle_start_description">選択した球団の試合開始を通知します</string>
+    <string name="setting_header_baseball_battle_end">試合終了</string>
+    <string name="setting_header_baseball_battle_end_description">選択した球団の試合終了を通知します</string>
+    <string name="setting_header_osusume_content">おすすめコンテンツ</string>
+    <string name="setting_header_osusume_content_description">特集や生活に役立つ情報などBIGLOBEがおすすめするコンテンツを通知します</string>
+    <string name="setting_osusume_content">おすすめコンテンツ</string>
+    <string name="setting_osusume_content_dialog">おすすめコンテンツのダイアログ</string>
+</resources>

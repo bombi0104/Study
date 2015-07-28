@@ -1,0 +1,118 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="jp.ne.biglobe.biglobeapp.views.PushSettingFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/swSettingAll"
+                style="@style/Setting_item"
+                android:background="#37474F"
+                android:paddingLeft="15dp"
+                android:text="@string/setting_push"
+                android:textColor="@android:color/white"
+                android:textSize="20sp" />
+
+            <LinearLayout style="@style/Setting_Header">
+
+                <TextView
+                    style="@style/Setting_SectionTitle"
+                    android:text="@string/setting_header_news" />
+
+                <TextView
+                    style="@style/Setting_SectionDescrition"
+                    android:text="@string/setting_header_news_description" />
+            </LinearLayout>
+
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/swNewsMorning"
+                style="@style/Setting_item"
+                android:text="@string/setting_news_moring" />
+
+            <View style="@style/Top_Line1" />
+
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/swNewsNoon"
+                style="@style/Setting_item"
+                android:text="@string/setting_news_noon" />
+
+            <View style="@style/Top_Line1" />
+
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/swNewsNight"
+                style="@style/Setting_item"
+                android:text="@string/setting_news_night" />
+
+            <View style="@style/Top_Line1" />
+
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/swNewsDislog"
+                style="@style/Setting_item"
+                android:text="@string/setting_news_dialog" />
+
+            <View style="@style/Top_Line3" />
+
+            <LinearLayout style="@style/Setting_Header">
+
+                <TextView
+                    style="@style/Setting_SectionTitle"
+                    android:text="@string/setting_header_baseball" />
+
+                <TextView
+                    style="@style/Setting_SectionDescrition"
+                    android:text="@string/setting_header_baseball_description" />
+            </LinearLayout>
+
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/swBaseballSchedule"
+                style="@style/Setting_item"
+                android:text="@string/setting_baseball_schedule" />
+
+            <View style="@style/Top_Line1" />
+
+            <ExpandableListView
+                android:id="@+id/listBattleStart"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"></ExpandableListView>
+
+            <View style="@style/Top_Line3" />
+
+            <LinearLayout style="@style/Setting_Header">
+
+                <TextView
+                    style="@style/Setting_SectionTitle"
+                    android:text="@string/setting_header_osusume_content" />
+
+                <TextView
+                    style="@style/Setting_SectionDescrition"
+                    android:text="@string/setting_header_osusume_content_description" />
+            </LinearLayout>
+
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/swOsusume"
+                style="@style/Setting_item"
+                android:text="@string/setting_osusume_content" />
+
+            <View style="@style/Top_Line1" />
+
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/swOsusumeDialog"
+                style="@style/Setting_item"
+                android:text="@string/setting_osusume_content_dialog" />
+
+            <View style="@style/Top_Line3" />
+        </LinearLayout>
+
+    </ScrollView>
+
+</FrameLayout>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="appid">btopadr</string>
+    <string name="test_flag">1</string>
+    <string name="baseball_master_url">https://testpush.www.biglobe.ne.jp/master/baseball_master.json</string>
+    <string name="shortcut_url">http://www.biglobe.ne.jp/a-top/?home=adrp1</string>
+    <string name="app_intro_url">http://www.biglobe.ne.jp/a-top/app_intro/</string>
+    <string name="base_api_url">https://testpush.www.biglobe.ne.jp/api/</string>
+    <string name="play_store_url">https://play.google.com/store/apps/details?id=jp.ne.biglobe.btoplauncher&amp;hl=ja</string>
+</resources>

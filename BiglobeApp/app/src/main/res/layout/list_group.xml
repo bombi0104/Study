@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    style="@style/Setting_Header_BattleStart"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        style="@style/Setting_SectionTitleBattleStart"
+        android:id="@+id/tvHeader"/>
+
+    <TextView
+        style="@style/Setting_SectionDescrition"
+        android:id="@+id/tvDescription"/>
+</LinearLayout>

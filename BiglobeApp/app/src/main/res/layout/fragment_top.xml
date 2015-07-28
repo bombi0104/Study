@@ -1,0 +1,92 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="jp.ne.biglobe.biglobeapp.views.TopFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/Top_Header"
+                android:text="@string/top_header1" />
+
+            <TextView
+                android:id="@+id/tvOpenBiglobe"
+                style="@style/Top_Cell_Text"
+                android:drawableLeft="@drawable/ic_biglobe"
+                android:text="@string/top_open_biglobe" />
+
+            <View style="@style/Top_Line2" />
+
+            <TextView
+                android:id="@+id/tvOpenHowToUse"
+                style="@style/Top_Cell_Text"
+                android:drawableLeft="@drawable/ic_howto"
+                android:text="@string/top_open_how_to_use" />
+
+            <View style="@style/Top_Line3" />
+
+            <TextView
+                style="@style/Top_Header"
+                android:text="@string/top_header2" />
+
+            <TextView
+                android:id="@+id/tvOpenSetting"
+                style="@style/Top_Cell_Text"
+                android:drawableLeft="@drawable/ic_notification"
+                android:text="@string/top_setting" />
+
+            <View style="@style/Top_Line3" />
+
+            <TextView
+                style="@style/Top_Header"
+                android:text="@string/top_header3" />
+
+            <TextView
+                android:id="@+id/tvCreateShortcut"
+                style="@style/Top_Cell_Text"
+                android:drawableLeft="@drawable/ic_shortcut"
+                android:text="@string/top_create_shortcut" />
+
+            <View style="@style/Top_Line2" />
+
+
+            <TextView
+                android:id="@+id/tvShowTutorial"
+                style="@style/Top_Cell_Text"
+                android:drawableLeft="@drawable/ic_setting_tutorial"
+                android:text="@string/top_show_tutorial" />
+
+            <View style="@style/Top_Line3" />
+
+            <TextView
+                style="@style/Top_Header"
+                android:text="@string/top_header4" />
+
+            <TextView
+                style="@style/Top_Cell_Text"
+                android:drawableLeft="@drawable/ic_biglobe"
+                android:text="@string/top_version_info" />
+
+            <View style="@style/Top_Line2" />
+
+            <TextView
+                android:id="@+id/tvOpenPlayStore"
+                style="@style/Top_Cell_Text"
+                android:drawableLeft="@drawable/ic_biglobe"
+                android:text="@string/top_open_playstore" />
+
+            <View style="@style/Top_Line3" />
+
+        </LinearLayout>
+    </ScrollView>
+
+
+</LinearLayout>
