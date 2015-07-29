@@ -164,13 +164,12 @@ public class PushSettingFragment extends Fragment implements CompoundButton.OnCh
             setting_osusume_dialog.setChecked(settingModel.isOsusumeDialog());
 
 
-            BaseballTeamExpandableListAdapter adapter =
-                    new BaseballTeamExpandableListAdapter(getActivity(), createBaseballTeamList(), this);
-            adapter.setList(baseballTeamList);
-            baseballTeamList.setAdapter(adapter);
+            baseballTeamListAdapter = new BaseballTeamExpandableListAdapter(getActivity(), createBaseballTeamList(), this);
+            baseballTeamListAdapter.setList(baseballTeamList);
+            baseballTeamList.setAdapter(baseballTeamListAdapter);
 
             // Update expandlistview height after created.
-            adapter.updateListHeight();
+            baseballTeamListAdapter.updateListHeight();
         }
     }
 
@@ -299,6 +298,8 @@ public class PushSettingFragment extends Fragment implements CompoundButton.OnCh
             if (blapp.getSetting() == null) {
                 blapp.setSetting(SettingModel.load());
             }
+
+            settingModel = blapp.getSetting();
 
             baseballTeamListAdapter.notifyDataSetChanged();
         }
