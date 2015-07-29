@@ -1,6 +1,7 @@
 package jp.ne.biglobe.biglobeapp.views;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ExpandableListView;
+import android.widget.LinearLayout;
 
 import de.greenrobot.event.EventBus;
 import jp.ne.biglobe.biglobeapp.BLApplication;
@@ -56,6 +58,7 @@ public class PushSettingFragment extends Fragment implements CompoundButton.OnCh
     private SwitchCompat setting_baseball_schedule;
     private SwitchCompat setting_osusume;
     private SwitchCompat setting_osusume_dialog;
+    private View greyView;
 
     /**
      * Use this factory method to create a new instance of
@@ -124,6 +127,7 @@ public class PushSettingFragment extends Fragment implements CompoundButton.OnCh
         setting_baseball_schedule = (SwitchCompat) view.findViewById(R.id.swBaseballSchedule);
         setting_osusume = (SwitchCompat) view.findViewById(R.id.swOsusume);
         setting_osusume_dialog = (SwitchCompat) view.findViewById(R.id.swOsusumeDialog);
+        greyView = view.findViewById(R.id.greyView);
 
         // Set listerner
         setting_all.setOnCheckedChangeListener(this);
@@ -178,10 +182,16 @@ public class PushSettingFragment extends Fragment implements CompoundButton.OnCh
                 if (settingModel.isAll() != isChecked) {
                     settingModel.setAll(isChecked);
                     Log.d(TAG, "Call API updatePushInfo");
+
+                    if (!isChecked) {
+                        greyView.setVisibility(View.VISIBLE);
+                    } else {
+                        greyView.setVisibility(View.GONE);
+                    }
                 }
                 break;
             case R.id.swNewsMorning:
-                if (settingModel.isNewsMorning() != isChecked){
+                if (settingModel.isNewsMorning() != isChecked) {
                     settingModel.setNewsMorning(isChecked);
                     Log.d(TAG, "Call API updatePushInfo");
                 }
@@ -282,10 +292,10 @@ public class PushSettingFragment extends Fragment implements CompoundButton.OnCh
     }
 
     // This method will be called when a MessageEvent is posted
-    public void onEvent(MessageEvent event){
+    public void onEvent(MessageEvent event) {
         Log.d(TAG, "Receive MessageEvent: " + event.message);
         if ("MasterDataChanged".equals(event.message)) {
-            BLApplication blapp = (BLApplication)getActivity().getApplication();
+            BLApplication blapp = (BLApplication) getActivity().getApplication();
             if (blapp.getSetting() == null) {
                 blapp.setSetting(SettingModel.load());
             }
@@ -299,7 +309,7 @@ public class PushSettingFragment extends Fragment implements CompoundButton.OnCh
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p>
+     * <p/>
      * See the Android Training lesson <a href=
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.

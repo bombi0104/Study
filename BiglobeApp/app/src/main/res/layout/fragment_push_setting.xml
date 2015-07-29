@@ -1,11 +1,10 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="jp.ne.biglobe.biglobeapp.views.PushSettingFragment">
 
-    <ScrollView
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -83,7 +82,7 @@
             <ExpandableListView
                 android:id="@+id/listBattleStart"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"></ExpandableListView>
+                android:layout_height="wrap_content" />
 
             <View style="@style/Top_Line3" />
 
@@ -113,6 +112,15 @@
             <View style="@style/Top_Line3" />
         </LinearLayout>
 
-    </ScrollView>
-
-</FrameLayout>
+        <ImageView
+            android:id="@+id/greyView"
+            android:layout_marginTop="55dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.7"
+            android:src="@drawable/black"
+            android:scaleType="fitXY"
+            android:clickable="true"
+            android:visibility="gone"/>
+    </FrameLayout>
+</ScrollView>
