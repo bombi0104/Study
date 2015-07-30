@@ -12,9 +12,7 @@ import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -24,9 +22,8 @@ import jp.ne.biglobe.biglobeapp.api.BaseballMasterLoader;
 import jp.ne.biglobe.biglobeapp.api.RegTokenAPI;
 import jp.ne.biglobe.biglobeapp.gcm.RegistrationIntentService;
 import jp.ne.biglobe.biglobeapp.utils.Enums;
-import jp.ne.biglobe.biglobeapp.utils.MessageEvent;
+import jp.ne.biglobe.biglobeapp.utils.BLEvent;
 import jp.ne.biglobe.biglobeapp.utils.SharedPrefs;
-import jp.ne.biglobe.biglobeapp.utils.Utils;
 
 /**
  * Created by taipa on 7/2/15.
@@ -40,7 +37,11 @@ public class CommonProcess {
     }
 
     /**
-     *
+     * Init process.
+     * Generate default setting data
+     * Get GCM token
+     * Call regToken api
+     * Call updatePushInfo api first time
      */
     public void initApp() {
         // Check if default setting value is first generated ?
@@ -110,7 +111,7 @@ public class CommonProcess {
     private void updatePushInfoFirstTime() {
         if (!SharedPrefs.getBool(Enums.PREF_FIRST_CALL_UPDATE_PUSHINFO_SUCCESS)) {
             // TODO: Call API updatePushinfo first times
-            EventBus.getDefault().post(new MessageEvent("Hello everyone!"));
+            EventBus.getDefault().post(new BLEvent(BLEvent.TYPES.INIT_PROCESS_DONE));
         }
     }
 
@@ -170,7 +171,7 @@ public class CommonProcess {
                                 settingModel.setBaseballMasterUpdateDate(updateDate);
 
                                 // Send notify to update screen list.
-                                EventBus.getDefault().post(new MessageEvent("MasterDataChanged"));
+                                EventBus.getDefault().post(new BLEvent(BLEvent.TYPES.UPDATE_BASEBALL_MASTER_DONE));
                             }
 
                             // Save downloaded timestamp to SharedPreference.

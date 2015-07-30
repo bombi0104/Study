@@ -21,7 +21,6 @@ import jp.ne.biglobe.biglobeapp.R;
 import jp.ne.biglobe.biglobeapp.models.CommonProcess;
 import jp.ne.biglobe.biglobeapp.models.SettingContent;
 import jp.ne.biglobe.biglobeapp.models.SettingModel;
-import jp.ne.biglobe.biglobeapp.utils.MessageEvent;
 
 /**
  * A fragment representing a list of Items.
@@ -86,19 +85,6 @@ public class PushSettingFragmentOld extends ListFragment {
         super.onListItemClick(l, v, position, id);
     }
 
-    // This method will be called when a MessageEvent is posted
-    public void onEvent(MessageEvent event){
-        Log.d(TAG, "Receive MessageEvent: " + event.message);
-        if ("MasterDataChanged".equals(event.message)) {
-            BLApplication blapp = (BLApplication)getActivity().getApplication();
-            if (blapp.getSetting() == null) {
-                blapp.setSetting(SettingModel.load());
-            }
-
-            adapter.updateItems(blapp.getSetting().generateSettingItems(this.getActivity()));
-
-        }
-    }
 
     /**
      *

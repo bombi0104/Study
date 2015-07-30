@@ -30,7 +30,7 @@ import jp.ne.biglobe.biglobeapp.models.CommonProcess;
 import jp.ne.biglobe.biglobeapp.models.GroupBaseballTeam;
 import jp.ne.biglobe.biglobeapp.models.SettingModel;
 import jp.ne.biglobe.biglobeapp.utils.Enums;
-import jp.ne.biglobe.biglobeapp.utils.MessageEvent;
+import jp.ne.biglobe.biglobeapp.utils.BLEvent;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -443,18 +443,19 @@ public class PushSettingFragment extends Fragment implements CompoundButton.OnCh
     }
 
     /**
-     * This method will be called when a MessageEvent is posted
-     *
      * @param event
      */
-    public void onEvent(MessageEvent event) {
-        Log.d(TAG, "Receive MessageEvent: " + event.message);
-        if ("MasterDataChanged".equals(event.message)) {
-            BLApplication blapp = (BLApplication) getActivity().getApplication();
-            blapp.setSetting(SettingModel.load());
-            settingModel = blapp.getSetting();
+    public void onEvent(BLEvent event) {
+        switch (event.type) {
+            case UPDATE_BASEBALL_MASTER_DONE:
+                BLApplication blapp = (BLApplication) getActivity().getApplication();
+                blapp.setSetting(SettingModel.load());
+                settingModel = blapp.getSetting();
 
-            baseballTeamListAdapter.updateNewData(createBaseballTeamList());
+                baseballTeamListAdapter.updateNewData(createBaseballTeamList());
+                break;
+            default:
+                break;
         }
     }
 

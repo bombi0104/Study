@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -27,7 +26,7 @@ import jp.ne.biglobe.biglobeapp.models.CommonProcess;
 
 import jp.ne.biglobe.biglobeapp.utils.Enums;
 
-import jp.ne.biglobe.biglobeapp.utils.MessageEvent;
+import jp.ne.biglobe.biglobeapp.utils.BLEvent;
 import jp.ne.biglobe.biglobeapp.utils.SharedPrefs;
 import jp.ne.biglobe.biglobeapp.views.TopFragment.OnFragmentInteractionListener;
 
@@ -189,9 +188,9 @@ public class MainActivity extends AppCompatActivity implements
 //        }
 //    }
 
-    // This method will be called when a MessageEvent is posted
-    public void onEvent(MessageEvent event) {
-        Toast.makeText(this, event.message, Toast.LENGTH_SHORT).show();
+
+    public void onEvent(BLEvent event) {
+        Log.d(TAG, "Get event : " + event.type);
     }
 
     @Override

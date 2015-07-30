@@ -23,20 +23,14 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.google.android.gms.gcm.GcmPubSub;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
 
-import java.io.IOException;
-
 import de.greenrobot.event.EventBus;
 import jp.ne.biglobe.biglobeapp.R;
-import jp.ne.biglobe.biglobeapp.api.RegTokenAPI;
 import jp.ne.biglobe.biglobeapp.models.CommonProcess;
 import jp.ne.biglobe.biglobeapp.utils.Enums;
-import jp.ne.biglobe.biglobeapp.utils.MessageEvent;
+import jp.ne.biglobe.biglobeapp.utils.BLEvent;
 import jp.ne.biglobe.biglobeapp.utils.SharedPrefs;
 
 public class RegistrationIntentService extends IntentService {
@@ -72,7 +66,7 @@ public class RegistrationIntentService extends IntentService {
                 SharedPrefs.saveString(Enums.PREF_GCM_TOKEN, token);
 
                 // Post events register done.
-                EventBus.getDefault().post(new MessageEvent(token));
+                EventBus.getDefault().post(new BLEvent(token));
 
                 // TODO: Implement this method to send any registration to your app's servers.
                 CommonProcess process = new CommonProcess(getApplicationContext());
