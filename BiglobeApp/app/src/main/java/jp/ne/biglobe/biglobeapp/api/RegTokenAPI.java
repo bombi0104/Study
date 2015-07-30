@@ -40,7 +40,7 @@ public class RegTokenAPI {
         url = url + "aid=" + mContext.getString(R.string.appid);
         url = url + "&dev=a";
         url = url + "&test=" + mContext.getString(R.string.test_flag);
-        url = url + "&tkn=" + mContext.getString(R.string.test_flag);
+        url = url + "&tkn=" + SharedPrefs.getString(Enums.PREF_GCM_TOKEN);
         if (!TextUtils.isEmpty(SharedPrefs.getString(Enums.PREF_TOKENID))){
             url = url + "&tid=" + SharedPrefs.getString(Enums.PREF_TOKENID);
         }

@@ -20,7 +20,9 @@ import com.android.volley.VolleyError;
 import de.greenrobot.event.EventBus;
 import jp.ne.biglobe.biglobeapp.BLApplication;
 import jp.ne.biglobe.biglobeapp.R;
+import jp.ne.biglobe.biglobeapp.api.GetPushInfoAPI;
 import jp.ne.biglobe.biglobeapp.api.RegTokenAPI;
+import jp.ne.biglobe.biglobeapp.api.UnregTokenAPI;
 import jp.ne.biglobe.biglobeapp.api.UpdatePushInfoAPI;
 import jp.ne.biglobe.biglobeapp.models.BaseballTeam;
 import jp.ne.biglobe.biglobeapp.models.BaseballTeamExpandableListAdapter;
@@ -190,61 +192,48 @@ public class PushSettingFragment extends Fragment implements CompoundButton.OnCh
         switch (buttonView.getId()) {
             case R.id.swSettingAll:
                 if (settingModel.isAll() != isChecked) {
-                    settingModel.setAll(isChecked);
                     Log.d(TAG, "Call API updatePushInfo");
 
                     if (!isChecked) {
-                        greyView.setVisibility(View.VISIBLE);
+                        unregtoken();
                     } else {
-                        greyView.setVisibility(View.GONE);
+                        regToken();
                     }
                 }
                 break;
             case R.id.swNewsMorning:
                 if (settingModel.isNewsMorning() != isChecked) {
-                    settingModel.setNewsMorning(isChecked);
                     updatePushInfo(Enums.UPDATE_ITEMS.NEWS_MORNING, isChecked, 0);
-                    Log.d(TAG, "Call API updatePushInfo");
                 }
                 break;
             case R.id.swNewsNoon:
                 if (settingModel.isNewsNoon() != isChecked) {
-                    settingModel.setNewsNoon(isChecked);
                     updatePushInfo(Enums.UPDATE_ITEMS.NEWS_NOON, isChecked, 0);
-                    Log.d(TAG, "Call API updatePushInfo");
                 }
                 break;
             case R.id.swNewsNight:
                 if (settingModel.isNewsNight() != isChecked) {
-                    settingModel.setNewsNight(isChecked);
                     updatePushInfo(Enums.UPDATE_ITEMS.NEWS_NIGHT, isChecked, 0);
-                    Log.d(TAG, "Call API updatePushInfo");
                 }
                 break;
             case R.id.swNewsDislog:
                 if (settingModel.isNewsDialog() != isChecked) {
                     settingModel.setNewsDialog(isChecked);
-                    Log.d(TAG, "Call API updatePushInfo");
                 }
                 break;
             case R.id.swBaseballSchedule:
                 if (settingModel.isBaseballSchedule() != isChecked) {
-                    settingModel.setBaseballSchedule(isChecked);
                     updatePushInfo(Enums.UPDATE_ITEMS.BASEBALL_SCHEDULE, isChecked, 0);
-                    Log.d(TAG, "Call API updatePushInfo");
                 }
                 break;
             case R.id.swOsusume:
                 if (settingModel.isOsusume() != isChecked) {
-                    settingModel.setOsusume(isChecked);
                     updatePushInfo(Enums.UPDATE_ITEMS.OSUSUME_CONTENT, isChecked, 0);
-                    Log.d(TAG, "Call API updatePushInfo");
                 }
                 break;
             case R.id.swOsusumeDialog:
                 if (settingModel.isOsusumeDialog() != isChecked) {
                     settingModel.setOsusumeDialog(isChecked);
-                    Log.d(TAG, "Call API updatePushInfo");
                 }
                 break;
             default:
@@ -265,11 +254,9 @@ public class PushSettingFragment extends Fragment implements CompoundButton.OnCh
                 for (BaseballTeam t : settingModel.getBaseballTeams()) {
                     if (t.getId() == team.getId()) {
                         if (isBattleStart) {
-                            t.setBattleStart(isChecked);
                             updatePushInfo(Enums.UPDATE_ITEMS.BASEBALL_BATTLE_START, isChecked, t.getId());
                             Log.d(TAG, "Call API updatePushInfo - Battle Start");
                         } else {
-                            t.setBattleEnd(isChecked);
                             updatePushInfo(Enums.UPDATE_ITEMS.BASEBALL_BATTLE_END, isChecked, t.getId());
                             Log.d(TAG, "Call API updatePushInfo - Battle End");
                         }
@@ -303,6 +290,11 @@ public class PushSettingFragment extends Fragment implements CompoundButton.OnCh
 
                     // Reload responsed data to screen.
                     loadData();
+                } else {
+                    // TODO : Show error dialog
+
+                    // Rollback value to previous status
+                    loadData();
                 }
                 Log.d(TAG, "updatePushInfo : " + response);
             }
@@ -310,6 +302,114 @@ public class PushSettingFragment extends Fragment implements CompoundButton.OnCh
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
+                // TODO: Show error dialog
+
+                // Rollback value to previous status
+                loadData();
+            }
+        });
+    }
+
+    /**
+     * Unregister token API
+     */
+    private void unregtoken() {
+        UnregTokenAPI api = new UnregTokenAPI(getActivity());
+        api.run(new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                if (CommonProcess.isReponseOK(response)) {
+                    greyView.setVisibility(View.VISIBLE);
+                    settingModel.setAll(false);
+                } else {
+                    // TODO : Show error dialog
+
+                    // Rollback value to previous status
+                    loadData();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+
+                // TODO : show error dialog
+
+                // Rollback value to previous status
+                loadData();
+            }
+        });
+    }
+
+    /**
+     * Call API RegToken
+     */
+    private void regToken() {
+        RegTokenAPI api = new RegTokenAPI(getActivity());
+        api.run(new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                if (CommonProcess.isReponseOK(response)) {
+                    // Save TokenID to SharedPreferences
+                    CommonProcess.getTokenIdFromResponse(response);
+
+                    // Remove grey layer, unlock screen.
+                    greyView.setVisibility(View.GONE);
+
+                    // Setting value to model
+                    settingModel.setAll(true);
+
+                    // Call getPushInfo api for sync data with server.
+                    getPushInfo();
+                } else {
+                    // TODO : Show error dialog
+
+                    // Rollback value to previous status
+                    loadData();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+
+                // TODO : show error dialog
+
+                // Rollback value to previous status
+                loadData();
+            }
+        });
+    }
+
+    /**
+     * Get push info after call regtoken API
+     */
+    private void getPushInfo() {
+        GetPushInfoAPI api = new GetPushInfoAPI(getActivity());
+        api.run(new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                if (CommonProcess.isReponseOK(response)) {
+                    CommonProcess.mergeUpdatePushInfoResponseToLocalObject(response, settingModel);
+
+                    // Reload data to screen
+                    loadData();
+                } else {
+                    // TODO : Show error dialog
+
+                    // Rollback value to previous status
+                    loadData();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+
+                // TODO : show error dialog
+
+                // Rollback value to previous status
+                loadData();
             }
         });
     }
@@ -363,7 +463,7 @@ public class PushSettingFragment extends Fragment implements CompoundButton.OnCh
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p>
+     * <p/>
      * See the Android Training lesson <a href=
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.

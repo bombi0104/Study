@@ -119,7 +119,7 @@ public class CommonProcess {
      *
      * @param response
      */
-    private void getTokenIdFromResponse(String response) {
+    public static void getTokenIdFromResponse(String response) {
         String[] strings = response.split(":");
         if (strings.length > 1) {
             SharedPrefs.saveString(Enums.PREF_TOKENID, strings[1].trim());

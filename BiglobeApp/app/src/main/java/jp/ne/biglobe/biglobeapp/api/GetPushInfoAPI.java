@@ -8,6 +8,8 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
 
 import jp.ne.biglobe.biglobeapp.R;
+import jp.ne.biglobe.biglobeapp.utils.Enums;
+import jp.ne.biglobe.biglobeapp.utils.SharedPrefs;
 
 /**
  * Created by taipa on 7/15/15.
@@ -34,7 +36,7 @@ public class GetPushInfoAPI {
      */
     private void generateURL() {
         url = mContext.getString(R.string.base_api_url) + "getPushInfo.jsp?";
-        url = url + "tid=" + "";
+        url = url + "tid=" + SharedPrefs.getString(Enums.PREF_TOKENID);
         url = url + "&aid=" + mContext.getString(R.string.appid);
         url = url + "&dev=a";
         url = url + "&test=" + mContext.getString(R.string.test_flag);
