@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="switch_is_battle_start" type="id" />
+    <item name="switch_baseball_team_obj" type="id" />
+</resources>

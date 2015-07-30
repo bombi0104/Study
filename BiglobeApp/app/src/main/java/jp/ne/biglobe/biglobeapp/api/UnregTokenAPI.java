@@ -1,12 +1,15 @@
 package jp.ne.biglobe.biglobeapp.api;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
 
 import jp.ne.biglobe.biglobeapp.R;
+import jp.ne.biglobe.biglobeapp.utils.Enums;
+import jp.ne.biglobe.biglobeapp.utils.SharedPrefs;
 
 /**
  * Created by taipa on 7/14/15.
@@ -14,13 +17,16 @@ import jp.ne.biglobe.biglobeapp.R;
 public class UnregTokenAPI {
     private static final String TAG = UnregTokenAPI.class.getSimpleName();
     private Context mContext;
+    private String url;
 
     public UnregTokenAPI(Context context) {
         mContext = context;
+        generateURL();
     }
 
     public void run(Response.Listener<String> responseOK, Response.ErrorListener responseNG) {
-        BLStringRequest request = new BLStringRequest(Request.Method.GET, getURL(), responseOK, responseNG);
+        Log.d(TAG, "Call API : " + url);
+        BLStringRequest request = new BLStringRequest(Request.Method.GET, url, responseOK, responseNG);
         Volley.newRequestQueue(mContext).add(request);
     }
 
@@ -28,12 +34,11 @@ public class UnregTokenAPI {
      *
      * @return
      */
-    private String getURL() {
-        String url = mContext.getString(R.string.base_api_url) + "unregToken.jsp?";
+    private void generateURL() {
+        url = mContext.getString(R.string.base_api_url) + "unregToken.jsp?";
         url = url + "aid=" + mContext.getString(R.string.appid);
         url = url + "&dev=a";
         url = url + "&test=" + mContext.getString(R.string.test_flag);
-        url = url + "&tid=" + "";
-        return url;
+        url = url + "&tid=" + SharedPrefs.getString(Enums.PREF_TOKENID);;
     }
 }

@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -121,7 +122,7 @@ public class CommonProcess {
     private void getTokenIdFromResponse(String response) {
         String[] strings = response.split(":");
         if (strings.length > 1) {
-            SharedPrefs.saveString(Enums.PREF_TOKENID, strings[1]);
+            SharedPrefs.saveString(Enums.PREF_TOKENID, strings[1].trim());
             Log.d(TAG, "RegTokenAPI - Token : " + strings[1]);
         }
     }
@@ -132,7 +133,7 @@ public class CommonProcess {
      * @param response
      * @return
      */
-    private boolean isReponseOK(String response) {
+    public static boolean isReponseOK(String response) {
         if (!TextUtils.isEmpty(response)) {
             return response.startsWith("OK");
         }
@@ -234,5 +235,55 @@ public class CommonProcess {
             e.printStackTrace();
         }
         return false;
+    }
+
+    /**
+     * Merge response data from updatePushInfo to local SettingModel object
+     *
+     * @param response
+     * @param settingModel
+     */
+    public static void mergeUpdatePushInfoResponseToLocalObject(String response, SettingModel settingModel) {
+        String[] responseArray = response.split("\n");
+        for (int i = 0; i < responseArray.length; i++) {
+            String[] item = responseArray[i].trim().split(":");
+            if (item.length == 2) {
+                switch (item[0]) {
+                    case "d1":
+                        settingModel.setNewsMorning("1".equals(item[1].trim()));
+                        break;
+                    case "d2":
+                        settingModel.setNewsNoon("1".equals(item[1].trim()));
+                        break;
+                    case "d3":
+                        settingModel.setNewsNight("1".equals(item[1].trim()));
+                        break;
+                    case "rc":
+                        settingModel.setOsusume("1".equals(item[1].trim()));
+                        break;
+                    case "bs":
+                        settingModel.setBaseballSchedule("1".equals(item[1].trim()));
+                        break;
+                    case "ts":
+                        String[] ts = item[1].trim().split("_");
+                        if (ts.length == 2) {
+                            settingModel.updateBaseballTeamSettingValue(ts[0], "1".equals(ts[1].trim()), true);
+                        }
+                        break;
+                    case "te":
+                        //settingModel.setNewsMorning(item[1] == "1" ? true : false);
+                        String[] te = item[1].trim().split("_");
+                        if (te.length == 2) {
+                            settingModel.updateBaseballTeamSettingValue(te[0], "1".equals(te[1].trim()), false);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        // Save changed data to SharedPreferences
+        settingModel.save();
     }
 }

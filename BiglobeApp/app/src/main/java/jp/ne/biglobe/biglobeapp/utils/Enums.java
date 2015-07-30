@@ -30,4 +30,14 @@ public class Enums {
     public enum PREF {
 
     }
+
+    public enum UPDATE_ITEMS {
+        NEWS_MORNING,
+        NEWS_NOON,
+        NEWS_NIGHT,
+        BASEBALL_SCHEDULE,
+        BASEBALL_BATTLE_START,
+        BASEBALL_BATTLE_END,
+        OSUSUME_CONTENT,
+    }
 }

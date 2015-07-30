@@ -16,9 +16,6 @@ public class BaseballTeam {
     private boolean battleStart;
     private boolean battleEnd;
 
-
-    private boolean isBattleStartItem;
-
     public int getId() {
         return id;
     }
@@ -37,15 +34,6 @@ public class BaseballTeam {
 
     public boolean getBattleEnd() {
         return battleEnd;
-    }
-
-
-    public boolean isBattleStartItem() {
-        return isBattleStartItem;
-    }
-
-    public void setIsBattleStartItem(boolean isBattleStartItem) {
-        this.isBattleStartItem = isBattleStartItem;
     }
 
     public BaseballTeam(int id, int sort, String name) {

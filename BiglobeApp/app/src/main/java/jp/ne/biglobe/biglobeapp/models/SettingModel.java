@@ -119,12 +119,15 @@ public class SettingModel {
     }
 
     /**
+     * Update baseball teams data by json string.
+     * json string is get from server of local file.
+     *
      * @param jsonData
      */
     public void updateBaseballTeam(String jsonData) {
         ArrayList<BaseballTeam> teams = BaseballTeam.getTeamListFromJSON(jsonData);
 
-        if (!teams.isEmpty()){
+        if (!teams.isEmpty()) {
             // Update local setting of teams to new teams list
             for (BaseballTeam team : teams) {
                 for (BaseballTeam tmp : baseballTeams) {
@@ -139,6 +142,25 @@ public class SettingModel {
 
             this.baseballTeams = teams;
             this.save();
+        }
+    }
+
+    /**
+     * Update value of a baseball team
+     *
+     * @param teamId        : TeamID
+     * @param value         : value On/Off
+     * @param isBattleStart : True incase battle start setting
+     */
+    public void updateBaseballTeamSettingValue(String teamId, boolean value, boolean isBattleStart) {
+        for (BaseballTeam team : baseballTeams) {
+            if (team.getId() == Integer.valueOf(teamId)) {
+                if (isBattleStart) {
+                    team.setBattleStart(value);
+                } else {
+                    team.setBattleEnd(value);
+                }
+            }
         }
     }
 

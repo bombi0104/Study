@@ -1,7 +1,6 @@
 package jp.ne.biglobe.biglobeapp.views;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -14,16 +13,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ExpandableListView;
-import android.widget.LinearLayout;
+
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 
 import de.greenrobot.event.EventBus;
 import jp.ne.biglobe.biglobeapp.BLApplication;
 import jp.ne.biglobe.biglobeapp.R;
+import jp.ne.biglobe.biglobeapp.api.RegTokenAPI;
+import jp.ne.biglobe.biglobeapp.api.UpdatePushInfoAPI;
 import jp.ne.biglobe.biglobeapp.models.BaseballTeam;
 import jp.ne.biglobe.biglobeapp.models.BaseballTeamExpandableListAdapter;
 import jp.ne.biglobe.biglobeapp.models.CommonProcess;
 import jp.ne.biglobe.biglobeapp.models.GroupBaseballTeam;
 import jp.ne.biglobe.biglobeapp.models.SettingModel;
+import jp.ne.biglobe.biglobeapp.utils.Enums;
 import jp.ne.biglobe.biglobeapp.utils.MessageEvent;
 
 /**
@@ -96,16 +100,19 @@ public class PushSettingFragment extends Fragment implements CompoundButton.OnCh
 
 
     /**
-     * Create data for ExpanableListview
+     * Create data for ExpanableListview (Battle start and battle end)
      *
      * @return
      */
     private SparseArray<GroupBaseballTeam> createBaseballTeamList() {
         SparseArray<GroupBaseballTeam> groups = new SparseArray<GroupBaseballTeam>();
+
+        // Create data for Battle-start list
         GroupBaseballTeam groupBattleStart = new GroupBaseballTeam(true);
         groupBattleStart.children.addAll(settingModel.getBaseballTeams());
         groups.append(0, groupBattleStart);
 
+        // Create data for Battle-end list
         GroupBaseballTeam groupBattleEnd = new GroupBaseballTeam(false);
         groupBattleEnd.children.addAll(settingModel.getBaseballTeams());
         groups.append(1, groupBattleEnd);
@@ -139,7 +146,7 @@ public class PushSettingFragment extends Fragment implements CompoundButton.OnCh
         setting_osusume.setOnCheckedChangeListener(this);
         setting_osusume_dialog.setOnCheckedChangeListener(this);
 
-        initData();
+        loadData();
 
         CommonProcess process = new CommonProcess(getActivity());
         process.updateBaseballMaster();
@@ -150,7 +157,7 @@ public class PushSettingFragment extends Fragment implements CompoundButton.OnCh
     /**
      * Get SettingModel data and apply to screen
      */
-    private void initData() {
+    private void loadData() {
         BLApplication app = (BLApplication) getActivity().getApplication();
         settingModel = app.getSetting();
         if (settingModel != null) {
@@ -163,13 +170,17 @@ public class PushSettingFragment extends Fragment implements CompoundButton.OnCh
             setting_osusume.setChecked(settingModel.isOsusume());
             setting_osusume_dialog.setChecked(settingModel.isOsusumeDialog());
 
+            // Load data for Battle-Start and Battle-End list
+            if (baseballTeamListAdapter == null) {
+                baseballTeamListAdapter = new BaseballTeamExpandableListAdapter(getActivity(), createBaseballTeamList(), this);
+                baseballTeamListAdapter.setList(baseballTeamList);
+                baseballTeamList.setAdapter(baseballTeamListAdapter);
 
-            baseballTeamListAdapter = new BaseballTeamExpandableListAdapter(getActivity(), createBaseballTeamList(), this);
-            baseballTeamListAdapter.setList(baseballTeamList);
-            baseballTeamList.setAdapter(baseballTeamListAdapter);
-
-            // Update expandlistview height after created.
-            baseballTeamListAdapter.updateListHeight();
+                // Update expandlistview height after created.
+                baseballTeamListAdapter.updateListHeight();
+            } else {
+                baseballTeamListAdapter.notifyDataSetChanged();
+            }
         }
     }
 
@@ -192,18 +203,21 @@ public class PushSettingFragment extends Fragment implements CompoundButton.OnCh
             case R.id.swNewsMorning:
                 if (settingModel.isNewsMorning() != isChecked) {
                     settingModel.setNewsMorning(isChecked);
+                    updatePushInfo(Enums.UPDATE_ITEMS.NEWS_MORNING, isChecked, 0);
                     Log.d(TAG, "Call API updatePushInfo");
                 }
                 break;
             case R.id.swNewsNoon:
                 if (settingModel.isNewsNoon() != isChecked) {
                     settingModel.setNewsNoon(isChecked);
+                    updatePushInfo(Enums.UPDATE_ITEMS.NEWS_NOON, isChecked, 0);
                     Log.d(TAG, "Call API updatePushInfo");
                 }
                 break;
             case R.id.swNewsNight:
                 if (settingModel.isNewsNight() != isChecked) {
                     settingModel.setNewsNight(isChecked);
+                    updatePushInfo(Enums.UPDATE_ITEMS.NEWS_NIGHT, isChecked, 0);
                     Log.d(TAG, "Call API updatePushInfo");
                 }
                 break;
@@ -216,12 +230,14 @@ public class PushSettingFragment extends Fragment implements CompoundButton.OnCh
             case R.id.swBaseballSchedule:
                 if (settingModel.isBaseballSchedule() != isChecked) {
                     settingModel.setBaseballSchedule(isChecked);
+                    updatePushInfo(Enums.UPDATE_ITEMS.BASEBALL_SCHEDULE, isChecked, 0);
                     Log.d(TAG, "Call API updatePushInfo");
                 }
                 break;
             case R.id.swOsusume:
                 if (settingModel.isOsusume() != isChecked) {
                     settingModel.setOsusume(isChecked);
+                    updatePushInfo(Enums.UPDATE_ITEMS.OSUSUME_CONTENT, isChecked, 0);
                     Log.d(TAG, "Call API updatePushInfo");
                 }
                 break;
@@ -235,20 +251,27 @@ public class PushSettingFragment extends Fragment implements CompoundButton.OnCh
                 break;
         }
 
-        if (buttonView.getTag() != null) {
-            BaseballTeam team = (BaseballTeam) buttonView.getTag();
-            boolean oldValue = team.isBattleStartItem() ? team.getBattleStart() : team.getBattleEnd();
+        // When change value of item in
+        // Battle Start and battle end list
+        if (buttonView.getTag(R.id.switch_baseball_team_obj) != null) {
+            BaseballTeam team = (BaseballTeam) buttonView.getTag(R.id.switch_baseball_team_obj);
+            boolean isBattleStart = (boolean) buttonView.getTag(R.id.switch_is_battle_start);
+            boolean oldValue = isBattleStart ? team.getBattleStart() : team.getBattleEnd();
 
+            // When init listview, this method will be call when switch have change
+            // data by programming, so, have to check old value and new value to known that
+            // user change value action or value changed by init listview
             if (oldValue != isChecked) {
-                for (BaseballTeam t :
-                        settingModel.getBaseballTeams()) {
+                for (BaseballTeam t : settingModel.getBaseballTeams()) {
                     if (t.getId() == team.getId()) {
-                        if (team.isBattleStartItem()) {
+                        if (isBattleStart) {
                             t.setBattleStart(isChecked);
-                            Log.d(TAG, "Call API updatePushInfo");
+                            updatePushInfo(Enums.UPDATE_ITEMS.BASEBALL_BATTLE_START, isChecked, t.getId());
+                            Log.d(TAG, "Call API updatePushInfo - Battle Start");
                         } else {
                             t.setBattleEnd(isChecked);
-                            Log.d(TAG, "Call API updatePushInfo");
+                            updatePushInfo(Enums.UPDATE_ITEMS.BASEBALL_BATTLE_END, isChecked, t.getId());
+                            Log.d(TAG, "Call API updatePushInfo - Battle End");
                         }
                         break;
                     }
@@ -256,10 +279,39 @@ public class PushSettingFragment extends Fragment implements CompoundButton.OnCh
             }
         }
 
-
         // Save change to SharedPreferece
         settingModel.save();
 
+    }
+
+    /**
+     * Call updatePushInfo API when touch on each setting item on screen
+     *
+     * @param item
+     * @param value
+     * @param baseball_team_id
+     */
+    private void updatePushInfo(Enums.UPDATE_ITEMS item, boolean value, int baseball_team_id) {
+        UpdatePushInfoAPI api = new UpdatePushInfoAPI(getActivity());
+        api.addParam(item, value, baseball_team_id);
+
+        api.run(new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                if (CommonProcess.isReponseOK(response)) {
+                    CommonProcess.mergeUpdatePushInfoResponseToLocalObject(response, settingModel);
+
+                    // Reload responsed data to screen.
+                    loadData();
+                }
+                Log.d(TAG, "updatePushInfo : " + response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
     }
 
 
@@ -290,18 +342,19 @@ public class PushSettingFragment extends Fragment implements CompoundButton.OnCh
         EventBus.getDefault().unregister(this);
     }
 
-    // This method will be called when a MessageEvent is posted
+    /**
+     * This method will be called when a MessageEvent is posted
+     *
+     * @param event
+     */
     public void onEvent(MessageEvent event) {
         Log.d(TAG, "Receive MessageEvent: " + event.message);
         if ("MasterDataChanged".equals(event.message)) {
             BLApplication blapp = (BLApplication) getActivity().getApplication();
-            if (blapp.getSetting() == null) {
-                blapp.setSetting(SettingModel.load());
-            }
-
+            blapp.setSetting(SettingModel.load());
             settingModel = blapp.getSetting();
 
-            baseballTeamListAdapter.notifyDataSetChanged();
+            baseballTeamListAdapter.updateNewData(createBaseballTeamList());
         }
     }
 
@@ -310,7 +363,7 @@ public class PushSettingFragment extends Fragment implements CompoundButton.OnCh
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p/>
+     * <p>
      * See the Android Training lesson <a href=
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.

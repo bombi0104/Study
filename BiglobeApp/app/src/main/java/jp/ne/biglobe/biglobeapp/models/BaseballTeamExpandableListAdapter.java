@@ -38,9 +38,15 @@ public class BaseballTeamExpandableListAdapter extends BaseExpandableListAdapter
         list = exlist;
     }
 
+    /**
+     *
+     * @param groups
+     */
     public void updateNewData(SparseArray<GroupBaseballTeam> groups) {
-
-
+        this.groups.clear();
+        for (int i = 0; i < groups.size(); i++) {
+            this.groups.append(i, groups.get(i));
+        }
         notifyDataSetChanged();
     }
 
@@ -65,15 +71,14 @@ public class BaseballTeamExpandableListAdapter extends BaseExpandableListAdapter
 
         switchCompat = (SwitchCompat) convertView.findViewById(R.id.switchItem);
         switchCompat.setText(children.getName());
-        children.setIsBattleStartItem(groups.get(groupPosition).isBattleStart);
-        switchCompat.setTag(children);
+        switchCompat.setTag(R.id.switch_baseball_team_obj, children);
+        switchCompat.setTag(R.id.switch_is_battle_start, groups.get(groupPosition).isBattleStart);
 
         // Set changed listener to PushSettingFragment
         switchCompat.setOnCheckedChangeListener(fragment);
 
-
         // Set value for switch
-        if (groups.get(groupPosition).isBattleStart){
+        if (groups.get(groupPosition).isBattleStart) {
             switchCompat.setChecked(children.getBattleStart());
         } else {
             switchCompat.setChecked(children.getBattleEnd());
